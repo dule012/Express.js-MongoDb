@@ -1,3 +1,3 @@
-const roles = { admin: "Admin", moderator: "Moderator", user: "User" };
+const roles = { admin: "admin", moderator: "moderator", user: "user" };
 
 export { roles };

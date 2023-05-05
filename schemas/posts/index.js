@@ -1,7 +1,6 @@
-const Joi = require("joi");
-import { roles } from "../../constants";
+import Joi from "joi";
 
-module.exports = {
+export default {
   paramsSchema: Joi.object({
     id: Joi.string().required().messages({
       "string.base": "Id need to be a id.",

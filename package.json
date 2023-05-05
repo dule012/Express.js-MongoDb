@@ -1,5 +1,5 @@
 {
-  "name": "express.js-mongodb",
+  "name": "express.js-mongoose",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dule012/Express.js-MongoDb.git"
+    "url": "git+https://github.com/dule012/Express.js-Mongoose.git"
   },
   "author": "Dusan Mihajlovic",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dule012/Express.js-MongoDb/issues"
+    "url": "https://github.com/dule012/Express.js-Mongoose/issues"
   },
-  "homepage": "https://github.com/dule012/Express.js-MongoDb#readme",
+  "homepage": "https://github.com/dule012/Express.js-Mongoose#readme",
   "dependencies": {
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",

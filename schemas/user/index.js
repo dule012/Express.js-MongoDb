@@ -1,7 +1,7 @@
-const Joi = require("joi");
-import { roles } from "../../constants";
+import Joi from "joi";
+import { roles } from "../../constants/index.js";
 
-module.exports = {
+export default {
   paramsSchema: Joi.object({
     id: Joi.string().required().messages({
       "string.base": "Id need to be a id.",
@@ -25,14 +25,10 @@ module.exports = {
       "string.base": "Field password need to be a string.",
       "string.empty": "Field password is required.",
     }),
-    email: Joi.string()
-      .required()
-      .email({ minDomainAtoms: 2 })
-      .min(6)
-      .messages({
-        "string.base": "Field email need to be a string.",
-        "string.empty": "Field email is required.",
-      }),
+    email: Joi.string().required().email().min(6).messages({
+      "string.base": "Field email need to be a string.",
+      "string.empty": "Field email is required.",
+    }),
     role: Joi.string()
       .required()
       .valid(roles.admin, roles.moderator, roles.user)

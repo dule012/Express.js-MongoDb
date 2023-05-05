@@ -1,6 +1,6 @@
-import { Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const schema = new Schema({
+const schema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -23,4 +23,4 @@ const schema = new Schema({
   },
 });
 
-export default schema;
+export default mongoose.model("Post", schema);

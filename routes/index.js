@@ -1,4 +1,7 @@
 import express from "express";
+import validation from "../middleware/validation/index.js";
+import userSchema from "../schemas/user/index.js";
+import registration from "../controllers/registration/index.js";
 
 const router = express.Router();
 
@@ -14,6 +17,11 @@ router
 
 // --------------------------------------------------------------------------------------------------
 
+router.post(
+  "/users/registration",
+  validation(userSchema.createSchema, "body"),
+  registration
+);
 router
   .route("/users/:id")
   .put(() => {})

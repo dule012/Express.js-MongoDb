@@ -1,6 +1,6 @@
-import { Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const schema = new Schema({
+const schema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -25,7 +25,9 @@ const schema = new Schema({
   },
   role: {
     type: String,
-    enum: ["Admin", "Moderator", "User"],
+    enum: ["admin", "moderator", "user"],
     default: "User",
   },
 });
+
+export default mongoose.model("User", schema);
