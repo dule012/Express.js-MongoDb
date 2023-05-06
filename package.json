@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/dule012/Express.js-Mongoose#readme",
   "dependencies": {
+    "@joi/date": "^2.1.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",

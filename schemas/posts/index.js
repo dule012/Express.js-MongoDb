@@ -1,4 +1,7 @@
-import Joi from "joi";
+import JoiBase from "joi";
+import JoiDate from "@joi/date";
+
+const Joi = JoiBase.extend(JoiDate);
 
 export default {
   paramsSchema: Joi.object({
@@ -34,5 +37,6 @@ export default {
       "string.base": "Field body need to be a string.",
       "string.empty": "Field body is required.",
     }),
+    date: Joi.date().format("YYYY-MM-DD HH:mm"),
   }),
 };
