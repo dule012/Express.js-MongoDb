@@ -13,10 +13,13 @@ const registration = async (req, res) => {
     if (email)
       return res.json({ error: true, message: "Email already exists." });
 
-    const user = new User(body);
+    const salt = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(body.password, salt);
+
+    const user = new User({ ...body, password });
     await user.save();
 
-    return res.json({
+    res.json({
       error: false,
       message: "Successfully created user.",
     });
