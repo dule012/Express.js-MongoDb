@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Post from "../../../models/post/index.js";
 
-const likePost = async (req, res) => {
+const likePost = async (req, res, next) => {
   const session = await mongoose.connection.startSession();
   try {
     const {
@@ -17,7 +17,7 @@ const likePost = async (req, res) => {
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();
-    throw error;
+    next(error);
   }
 };
 

@@ -24,11 +24,10 @@ app.options("*", cors());
 app.use(helmet());
 
 app.use("/api", router);
-app.use((err, _, res) => {
-  if (err)
-    return res
-      .status(500)
-      .json({ error: true, message: "Something went wrong." });
+
+app.use((err, req, res, next) => {
+  console.log(err);
+  res.status(500).json({ error: true, message: "Something went wrong." });
 });
 
 app.listen(process.env.PORT, () =>

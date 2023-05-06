@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import User from "../../../models/user/index.js";
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   try {
     const { body } = req;
 
@@ -24,7 +24,7 @@ const createUser = async (req, res) => {
       message: "Successfully created user.",
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 };
 

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Post from "../../../models/post/index.js";
 
-const deletePost = async (req, res) => {
+const deletePost = async (req, res, next) => {
   const session = await mongoose.connection.startSession();
   try {
     const {
@@ -19,7 +19,7 @@ const deletePost = async (req, res) => {
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();
-    throw error;
+    next(error);
   }
 };
 

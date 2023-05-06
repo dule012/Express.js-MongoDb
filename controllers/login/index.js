@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import User from "../../models/user/index.js";
 dotenv.config();
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   try {
     const { body } = req;
 
@@ -25,7 +25,7 @@ const login = async (req, res) => {
       data: { token },
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 };
 

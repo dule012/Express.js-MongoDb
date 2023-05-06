@@ -10,7 +10,7 @@ const validation = (schema, prop) => (req, res, next) => {
     req[prop] = value;
     next();
   } catch (error) {
-    throw error;
+    next(error);
   }
 };
 

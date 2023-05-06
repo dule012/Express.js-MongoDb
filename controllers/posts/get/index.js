@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-import post from "../../../models/post/index.js";
 import Post from "../../../models/post/index.js";
 
 const getPosts = async (req, res, next) => {
@@ -45,7 +43,7 @@ const getPosts = async (req, res, next) => {
       data: posts,
     });
   } catch (error) {
-    return next(error);
+    next(error);
   }
 };
 
