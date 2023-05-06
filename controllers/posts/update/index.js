@@ -10,11 +10,13 @@ const updatePost = async (req, res) => {
     } = req;
 
     await session.startTransaction();
-    await Post.updateOne({ _id: id }, { $set: body });
+    await Post.updateOne({ _id: id }, body);
     await session.commitTransaction();
     await session.endSession();
 
-    res.json({ error: false, message: "Successfully updated post." });
+    res
+      .status(200)
+      .json({ error: false, message: "Successfully updated post." });
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();

@@ -1,22 +1,19 @@
 import mongoose from "mongoose";
 import Post from "../../../models/post/index.js";
 
-const createPost = async (req, res) => {
+const likePost = async (req, res) => {
   const session = await mongoose.connection.startSession();
   try {
-    const { body } = req;
+    const {
+      params: { id },
+    } = req;
 
     await session.startTransaction();
-
-    const post = new Post(body);
-    await post.save();
-
+    await Post.updateOne({ _id: id }, { $inc: { likes: 1 } });
     await session.commitTransaction();
     await session.endSession();
 
-    res
-      .status(200)
-      .json({ error: false, message: "Successfully created post." });
+    res.status(200).json({ error: false, message: "Successfully liked post." });
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();
@@ -24,4 +21,4 @@ const createPost = async (req, res) => {
   }
 };
 
-export default createPost;
+export default likePost;

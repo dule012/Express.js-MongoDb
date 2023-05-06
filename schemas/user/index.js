@@ -40,21 +40,17 @@ export default {
   updateSchema: Joi.object({
     name: Joi.string().min(2).messages({
       "string.base": "Field name need to be a string.",
-      "string.empty": "Field name is required.",
     }),
     lastname: Joi.string().min(2).messages({
       "string.base": "Field lastname need to be a string.",
-      "string.empty": "Field lastname is required.",
     }),
     password: Joi.string().min(5).messages({
       "string.base": "Field password need to be a string.",
-      "string.empty": "Field password is required.",
     }),
     role: Joi.string()
       .valid(roles.admin, roles.moderator, roles.user)
       .messages({
         "string.base": "Field role need to be a string.",
-        "string.empty": "Field role is required.",
       }),
   }),
 };

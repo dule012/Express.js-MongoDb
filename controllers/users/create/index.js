@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
-import User from "../../models/user/index.js";
+import User from "../../../models/user/index.js";
 
-const registration = async (req, res) => {
+const createUser = async (req, res) => {
   try {
     const { body } = req;
 
@@ -28,4 +28,4 @@ const registration = async (req, res) => {
   }
 };
 
-export default registration;
+export default createUser;

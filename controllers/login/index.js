@@ -19,7 +19,7 @@ const login = async (req, res) => {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
-    res.json({
+    res.status(200).json({
       error: false,
       message: "Successfully login",
       data: { token },

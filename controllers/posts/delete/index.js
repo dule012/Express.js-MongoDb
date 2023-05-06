@@ -13,7 +13,9 @@ const deletePost = async (req, res) => {
     await session.commitTransaction();
     await session.endSession();
 
-    res.json({ error: false, message: "Successfully deleted post." });
+    res
+      .status(200)
+      .json({ error: false, message: "Successfully deleted post." });
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();

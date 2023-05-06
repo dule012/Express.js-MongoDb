@@ -31,6 +31,11 @@ const authorize = async (req, res, next) => {
         .json({ error: true, message: "Your token expired." });
 
     const user = await User.findOne({ email: decoded.email });
+    if (!user)
+      return res
+        .status(401)
+        .json({ error: true, message: "Email not exists." });
+
     req.user = user;
 
     next();

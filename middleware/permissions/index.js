@@ -3,7 +3,9 @@ const permissions = (permissions) => (req, res, next) => {
 
   if (permissions.indexOf(user.role) !== -1) next();
   else
-    res.json({ error: true, message: "Not permission granted for that role." });
+    res
+      .status(401)
+      .json({ error: true, message: "Not permission granted for that role." });
 };
 
 export default permissions;

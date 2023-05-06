@@ -21,6 +21,11 @@ const schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  type: {
+    type: String,
+    enum: ["ordinary", "important"],
+    default: "ordinary",
+  },
 });
 
 export default mongoose.model("Post", schema);

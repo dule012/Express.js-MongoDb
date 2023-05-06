@@ -7,6 +7,7 @@ import userSchema from "../../schemas/user/index.js";
 import loginSchema from "../../schemas/login/index.js";
 import registration from "../../controllers/registration/index.js";
 import login from "../../controllers/login/index.js";
+import createUser from "../../controllers/users/create/index.js";
 
 const router = express.Router();
 const { admin } = roles;
@@ -16,6 +17,7 @@ router.post(
   validation(userSchema.createSchema, "body"),
   registration
 );
+
 router.post("/login", validation(loginSchema, "body"), login);
 
 router
@@ -33,6 +35,7 @@ router
     validation(userSchema.paramsSchema, "params"),
     () => {}
   );
+
 router
   .route("/")
   .get(authorize, permissions([admin]), () => {})
@@ -40,7 +43,7 @@ router
     authorize,
     permissions([admin]),
     validation(userSchema.createSchema, "body"),
-    registration
+    createUser
   );
 
 export default router;
