@@ -8,10 +8,10 @@ const authorize = async (req, res, next) => {
     const { headers, cookies } = req;
 
     const token =
-      (headers.authorization.startsWith("Bearer ") &&
-        headers.authorization.split(" ")[1]) ||
+      (headers.authorization?.startsWith("Bearer ") &&
+        headers.authorization?.split(" ")?.[1]) ||
       headers.authorization ||
-      cookies.token;
+      cookies?.token;
 
     if (!token)
       return res.status(401).json({ error: true, message: "Not logged in." });
@@ -32,9 +32,7 @@ const authorize = async (req, res, next) => {
 
     const user = await User.findOne({ email: decoded.email });
     if (!user)
-      return res
-        .status(401)
-        .json({ error: true, message: "Email not exists." });
+      return res.status(401).json({ error: true, message: "User not exists." });
 
     req.user = user;
 

@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import User from "../../../models/user/index.js";
 
 const createUser = async (req, res, next) => {
-  const session = mongoose.connection.startSession();
+  const session = await mongoose.connection.startSession();
   try {
     const { body } = req;
 
