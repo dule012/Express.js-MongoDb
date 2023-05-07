@@ -5,11 +5,15 @@ import authorize from "../../middleware/authorize/index.js";
 import permissions from "../../middleware/permissions/index.js";
 import postSchema from "../../schemas/posts/index.js";
 import likeSchema from "../../schemas/posts/like/index.js";
+import postByTitleSchema from "../../schemas/posts/title/index.js";
+import postByAuthorSchema from "../../schemas/posts/author/index.js";
 import createPost from "../../controllers/posts/create/index.js";
 import updatePost from "../../controllers/posts/update/index.js";
 import deletePost from "../../controllers/posts/delete/index.js";
 import likePost from "../../controllers/posts/like/index.js";
 import getPosts from "../../controllers/posts/get/index.js";
+import getPostsByAuthor from "../../controllers/posts/getByAuthor/index.js";
+import getPostsByTitle from "../../controllers/posts/getByTitle/index.js";
 
 const router = express.Router();
 const { moderator, admin, user } = roles;
@@ -20,6 +24,24 @@ router.put(
   permissions([user]),
   validation(likeSchema.paramsSchema, "params"),
   likePost
+);
+
+router.get(
+  "/author/:author",
+  authorize,
+  permissions([moderator, admin, user]),
+  validation(postByAuthorSchema.paramsSchema, "params"),
+  validation(postByAuthorSchema.querySchema, "query"),
+  getPostsByAuthor
+);
+
+router.get(
+  "/title/:title",
+  authorize,
+  permissions([moderator, admin, user]),
+  validation(postByTitleSchema.paramsSchema, "params"),
+  validation(postByTitleSchema.querySchema, "query"),
+  getPostsByTitle
 );
 
 router
@@ -43,7 +65,7 @@ router
   .get(
     authorize,
     permissions([moderator, admin, user]),
-    validation(postSchema.getSchema, "query"),
+    validation(postSchema.querySchema, "query"),
     getPosts
   )
   .post(

@@ -4,13 +4,7 @@ import JoiDate from "@joi/date";
 const Joi = JoiBase.extend(JoiDate);
 
 export default {
-  getSchema: Joi.object({
-    author: Joi.string().messages({
-      "string.base": "author need to be a string.",
-    }),
-    title: Joi.string().messages({
-      "string.base": "title need to be a string.",
-    }),
+  querySchema: Joi.object({
     page: Joi.string().messages({
       "string.base": "page need to be a string.",
     }),

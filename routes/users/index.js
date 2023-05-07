@@ -8,6 +8,9 @@ import loginSchema from "../../schemas/login/index.js";
 import registration from "../../controllers/registration/index.js";
 import login from "../../controllers/login/index.js";
 import createUser from "../../controllers/users/create/index.js";
+import updateUser from "../../controllers/users/update/index.js";
+import deleteUser from "../../controllers/users/delete/index.js";
+import getUsers from "../../controllers/users/get/index.js";
 
 const router = express.Router();
 const { admin } = roles;
@@ -27,18 +30,23 @@ router
     permissions([admin]),
     validation(userSchema.updateSchema, "body"),
     validation(userSchema.paramsSchema, "params"),
-    () => {}
+    updateUser
   )
   .delete(
     authorize,
     permissions([admin]),
     validation(userSchema.paramsSchema, "params"),
-    () => {}
+    deleteUser
   );
 
 router
   .route("/")
-  .get(authorize, permissions([admin]), () => {})
+  .get(
+    authorize,
+    permissions([admin]),
+    validation(userSchema.querySchema, "query"),
+    getUsers
+  )
   .post(
     authorize,
     permissions([admin]),

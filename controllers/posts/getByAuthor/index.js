@@ -1,9 +1,12 @@
 import Post from "../../../models/post/index.js";
 import { defaultPaginationLimit } from "../../../constants/index.js";
 
-const getPosts = async (req, res, next) => {
+const getPostsByAuthor = async (req, res, next) => {
   try {
-    const { query } = req;
+    const {
+      params: { author },
+      query,
+    } = req;
 
     const limit =
       +query.limit ||
@@ -12,20 +15,24 @@ const getPosts = async (req, res, next) => {
     const skip = query.page ? (+query.page - 1) * limit : 0;
 
     const posts = await Post.aggregate([
+      { $match: { author: { $regex: author, $options: "i" } } },
       { $sort: { likes: -1 } },
       { $skip: skip },
       { $limit: limit },
       {
         $group: {
-          _id: { author: "$author", type: "$type" },
+          _id: {
+            author: "$author",
+            type: "$type",
+          },
           posts: {
             $push: {
               id: "$_id",
               author: "$author",
               title: "$title",
               body: "$body",
-              date: "$date",
               likes: "$likes",
+              date: "$date",
               type: "$type",
             },
           },
@@ -46,7 +53,7 @@ const getPosts = async (req, res, next) => {
 
     res.status(200).json({
       error: false,
-      message: "Successfully returned posts.",
+      message: "Successfully returned posts by author.",
       data: posts,
     });
   } catch (error) {
@@ -54,4 +61,4 @@ const getPosts = async (req, res, next) => {
   }
 };
 
-export default getPosts;
+export default getPostsByAuthor;
