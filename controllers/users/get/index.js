@@ -6,7 +6,7 @@ const getUsers = async (req, res, next) => {
     const { query } = req;
 
     const limit =
-      +query.limit ||
+      (+query.limit > 0 && +query.limit) ||
       (query.page && defaultPaginationLimit) ||
       Number.MAX_SAFE_INTEGER;
     const skip = query.page ? (+query.page - 1) * limit : 0;

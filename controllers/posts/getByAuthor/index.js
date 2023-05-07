@@ -9,7 +9,7 @@ const getPostsByAuthor = async (req, res, next) => {
     } = req;
 
     const limit =
-      +query.limit ||
+      (+query.limit > 0 && +query.limit) ||
       (query.page && defaultPaginationLimit) ||
       Number.MAX_SAFE_INTEGER;
     const skip = query.page ? (+query.page - 1) * limit : 0;
@@ -27,7 +27,7 @@ const getPostsByAuthor = async (req, res, next) => {
           },
           posts: {
             $push: {
-              id: "$_id",
+              _id: "$_id",
               author: "$author",
               title: "$title",
               body: "$body",
