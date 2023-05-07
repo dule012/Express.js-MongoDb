@@ -13,7 +13,6 @@ mongoose
   .catch(() => console.log("Error connecting to db"));
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
     credentials: true,

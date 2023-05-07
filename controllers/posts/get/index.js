@@ -1,23 +1,29 @@
 import Post from "../../../models/post/index.js";
+import { defaultPaginationLimit } from "../../../constants/index.js";
 
 const getPosts = async (req, res, next) => {
   try {
     const { query } = req;
+    let {
+      query: { page, limit },
+    } = req;
 
     const matchProps = ["author", "title"];
-    const limit = query.page ? 10 : Number.MAX_SAFE_INTEGER;
 
     let match = {};
     for (let prop of matchProps) {
-      if (query[prop]) match[prop] = query[prop];
+      if (query[prop]) match[prop] = { $regex: query[prop], $options: "i" };
     }
 
-    const skip = query.page ? (+query.page - 1) * limit : 0;
+    limit =
+      +limit || (page && defaultPaginationLimit) || Number.MAX_SAFE_INTEGER;
+    const skip = page ? (+page - 1) * limit : 0;
 
     const posts = await Post.aggregate([
       {
         $match: match,
       },
+      { $sort: { likes: -1 } },
       { $skip: skip },
       { $limit: limit },
       {
