@@ -6,10 +6,10 @@ const Joi = JoiBase.extend(JoiDate);
 export default {
   querySchema: Joi.object({
     page: Joi.string().messages({
-      "string.base": "page need to be a string.",
+      "string.base": "Query param page need to be a string.",
     }),
     limit: Joi.string().messages({
-      "string.base": "limit need to be a string.",
+      "string.base": "Query param limit need to be a string.",
     }),
   }),
   paramsSchema: Joi.object({
@@ -46,7 +46,16 @@ export default {
     body: Joi.string().min(2).messages({
       "string.base": "Field body need to be a string.",
     }),
-    date: Joi.date().format("YYYY-MM-DD HH:mm"),
+    likes: Joi.number().min(1).messages({
+      "number.base": "Field likes need to be a number.",
+      "number.min": "Field likes min. length is 1.",
+    }),
+    usersWhoLiked: Joi.array().items(Joi.string()).messages({
+      "array.base": "Field usersWhoLiked need to be array of strings.",
+    }),
+    date: Joi.date().format("YYYY-MM-DD HH:mm").messages({
+      "date.base": "Field date need to be date format YYYY-MM-DD HH:mm.",
+    }),
     type: Joi.string().valid("ordinary", "important").messages({
       "string.base": "Field type need to be a string.",
     }),
