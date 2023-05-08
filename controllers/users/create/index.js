@@ -10,11 +10,15 @@ const createUser = async (req, res, next) => {
     await session.startTransaction();
     const username = await User.findOne({ username: body.username });
     if (username)
-      return res.json({ error: true, message: "Username already exists." });
+      return res
+        .status(422)
+        .json({ error: true, message: "Username already exists." });
 
     const email = await User.findOne({ email: body.email });
     if (email)
-      return res.json({ error: true, message: "Email already exists." });
+      return res
+        .status(422)
+        .json({ error: true, message: "Email already exists." });
 
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(body.password, salt);

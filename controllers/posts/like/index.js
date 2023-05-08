@@ -6,10 +6,28 @@ const likePost = async (req, res, next) => {
   try {
     const {
       params: { id },
+      user,
     } = req;
 
     await session.startTransaction();
-    await Post.updateOne({ _id: id }, { $inc: { likes: 1 } });
+    const post = await Post.findOne({ _id: id });
+
+    if (!post)
+      return res.status(404).json({ error: false, message: "Post not found." });
+
+    if (post.usersWhoLiked.indexOf(user.username) !== -1)
+      return res.status(200).json({
+        error: false,
+        message: "Post already been liked by this user.",
+      });
+
+    await Post.updateOne(
+      { _id: id },
+      {
+        $inc: { likes: 1 },
+        usersWhoLiked: [...post.usersWhoLiked, req.user.username],
+      }
+    );
     await session.commitTransaction();
     await session.endSession();
 

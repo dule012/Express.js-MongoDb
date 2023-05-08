@@ -10,6 +10,11 @@ const updatePost = async (req, res, next) => {
     } = req;
 
     await session.startTransaction();
+    const post = await Post.findOne({ _id: id });
+
+    if (!post)
+      return res.status(404).json({ error: false, message: "Post not found." });
+
     await Post.updateOne({ _id: id }, body);
     await session.commitTransaction();
     await session.endSession();

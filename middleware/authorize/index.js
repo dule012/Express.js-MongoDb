@@ -32,7 +32,7 @@ const authorize = async (req, res, next) => {
 
     const user = await User.findOne({ email: decoded.email });
     if (!user)
-      return res.status(401).json({ error: true, message: "User not exists." });
+      return res.status(404).json({ error: true, message: "User not found." });
 
     req.user = user;
 

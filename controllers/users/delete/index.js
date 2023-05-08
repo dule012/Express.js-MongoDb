@@ -9,6 +9,11 @@ const deleteUser = async (req, res, next) => {
     } = req;
 
     await session.startTransaction();
+    const user = await User.findOne({ _id: id });
+
+    if (!user)
+      return res.status(404).json({ error: false, message: "User not found." });
+
     await User.deleteOne({ _id: id });
     await session.commitTransaction();
     await session.endSession();

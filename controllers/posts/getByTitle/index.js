@@ -8,8 +8,18 @@ const getPostsByTitle = async (req, res, next) => {
       query,
     } = req;
 
+    if (
+      (!+query.page && query.page !== undefined) ||
+      +query.page <= 0 ||
+      (!+query.limit && query.limit !== undefined) ||
+      +query.limit <= 0
+    )
+      return res
+        .status(400)
+        .json({ error: true, message: "Wrong query parameters." });
+
     const limit =
-      (+query.limit > 0 && +query.limit) ||
+      +query.limit ||
       (query.page && defaultPaginationLimit) ||
       Number.MAX_SAFE_INTEGER;
     const skip = query.page ? (+query.page - 1) * limit : 0;
@@ -36,6 +46,7 @@ const getPostsByTitle = async (req, res, next) => {
               title: "$title",
               body: "$body",
               likes: "$likes",
+              usersWhoLiked: "$usersWhoLiked",
               date: "$date",
               type: "$type",
             },

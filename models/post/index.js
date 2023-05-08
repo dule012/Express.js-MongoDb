@@ -21,6 +21,10 @@ const schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  usersWhoLiked: {
+    type: Array,
+    default: [],
+  },
   type: {
     type: String,
     enum: ["ordinary", "important"],

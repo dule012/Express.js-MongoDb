@@ -10,6 +10,11 @@ const updateUser = async (req, res, next) => {
     } = req;
 
     await session.startTransaction();
+    const user = await User.findOne({ _id: id });
+
+    if (!user)
+      return res.status(404).json({ error: false, message: "User not found." });
+
     await User.updateOne({ _id: id }, body);
     await session.commitTransaction();
     await session.endSession();
