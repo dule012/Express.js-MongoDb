@@ -3,11 +3,11 @@ import { roles } from "../../constants/index.js";
 
 export default {
   querySchema: Joi.object({
-    page: Joi.string().messages({
-      "string.base": "Query param page need to be a string.",
+    page: Joi.number().min(1).messages({
+      "number.base": "Query param page need to be a number.",
     }),
-    limit: Joi.string().messages({
-      "string.base": "Query param limit need to be a string.",
+    limit: Joi.number().min(1).messages({
+      "number.base": "Query param limit need to be a number.",
     }),
   }),
   paramsSchema: Joi.object({

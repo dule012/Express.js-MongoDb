@@ -5,16 +5,6 @@ const getPosts = async (req, res, next) => {
   try {
     const { query } = req;
 
-    if (
-      (!+query.page && query.page !== undefined) ||
-      +query.page <= 0 ||
-      (!+query.limit && query.limit !== undefined) ||
-      +query.limit <= 0
-    )
-      return res
-        .status(400)
-        .json({ error: true, message: "Wrong query parameters." });
-
     const limit =
       +query.limit ||
       (query.page && defaultPaginationLimit) ||
@@ -27,28 +17,17 @@ const getPosts = async (req, res, next) => {
       { $limit: limit },
       {
         $group: {
-          _id: { author: "$author", type: "$type" },
+          _id: "$type",
           posts: {
             $push: {
               _id: "$_id",
               author: "$author",
               title: "$title",
               body: "$body",
-              date: "$date",
               likes: "$likes",
               usersWhoLiked: "$usersWhoLiked",
+              date: "$date",
               type: "$type",
-            },
-          },
-        },
-      },
-      {
-        $group: {
-          _id: "$_id.author",
-          types: {
-            $push: {
-              type: "$_id.type",
-              posts: "$posts",
             },
           },
         },

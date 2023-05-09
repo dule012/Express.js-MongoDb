@@ -5,16 +5,6 @@ const getUsers = async (req, res, next) => {
   try {
     const { query } = req;
 
-    if (
-      (!+query.page && query.page !== undefined) ||
-      +query.page <= 0 ||
-      (!+query.limit && query.limit !== undefined) ||
-      +query.limit <= 0
-    )
-      return res
-        .status(400)
-        .json({ error: true, message: "Wrong query parameters." });
-
     const limit =
       +query.limit ||
       (query.page && defaultPaginationLimit) ||
