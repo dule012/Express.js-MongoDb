@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import User from "../../../models/user/index.js";
+import { response } from "../../../utils/common/index.js";
 
 const deleteUser = async (req, res, next) => {
   const session = await mongoose.connection.startSession();
@@ -9,22 +10,23 @@ const deleteUser = async (req, res, next) => {
     } = req;
 
     await session.startTransaction();
-    const user = await User.findOne({ _id: id });
 
-    if (!user)
-      return res.status(404).json({ error: false, message: "User not found." });
+    const user = await User.deleteOne({ _id: id });
+    if (!user.acknowledged)
+      return await response(
+        res,
+        { status: 404, message: "User not found." },
+        session
+      );
 
-    await User.deleteOne({ _id: id });
     await session.commitTransaction();
-    await session.endSession();
 
-    res
-      .status(200)
-      .json({ error: false, message: "Successfully deleted user." });
+    response(res, { status: 200, message: "Successfully deleted user." });
   } catch (error) {
     await session.abortTransaction();
-    await session.endSession();
     next(error);
+  } finally {
+    await session.endSession();
   }
 };
 

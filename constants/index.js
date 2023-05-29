@@ -1,4 +1,2 @@
-const roles = { admin: "admin", moderator: "moderator", user: "user" };
-const defaultPaginationLimit = 5;
-
-export { roles, defaultPaginationLimit };
+export const roles = { admin: "admin", user: "user" };
+export const paginationLimit = 10;

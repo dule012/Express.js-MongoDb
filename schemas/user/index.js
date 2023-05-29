@@ -1,13 +1,9 @@
 import Joi from "joi";
-import { roles } from "../../constants/index.js";
 
 export default {
   querySchema: Joi.object({
     page: Joi.number().min(1).messages({
       "number.base": "Query param page need to be a number.",
-    }),
-    limit: Joi.number().min(1).messages({
-      "number.base": "Query param limit need to be a number.",
     }),
   }),
   paramsSchema: Joi.object({
@@ -37,13 +33,10 @@ export default {
       "string.base": "Field email need to be a string.",
       "string.empty": "Field email is required.",
     }),
-    role: Joi.string()
-      .required()
-      .valid(roles.admin, roles.moderator, roles.user)
-      .messages({
-        "string.base": "Field role need to be a string.",
-        "string.empty": "Field role is required.",
-      }),
+    role: Joi.string().required().valid("admin", "user").messages({
+      "string.base": "Field role need to be a string.",
+      "string.empty": "Field role is required.",
+    }),
   }),
   updateSchema: Joi.object({
     name: Joi.string().min(2).messages({
@@ -55,10 +48,8 @@ export default {
     password: Joi.string().min(5).messages({
       "string.base": "Field password need to be a string.",
     }),
-    role: Joi.string()
-      .valid(roles.admin, roles.moderator, roles.user)
-      .messages({
-        "string.base": "Field role need to be a string.",
-      }),
+    role: Joi.string().valid("admin", "user").messages({
+      "string.base": "Field role need to be a string.",
+    }),
   }),
 };

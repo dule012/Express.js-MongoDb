@@ -1,24 +1,19 @@
 import Post from "../../../models/post/index.js";
-import { defaultPaginationLimit } from "../../../constants/index.js";
+import { $skip, response } from "../../../utils/common/index.js";
+import { paginationLimit } from "../../../constants/index.js";
 
 const getPostsByAuthor = async (req, res, next) => {
   try {
     const {
       params: { author },
-      query,
+      query: { page },
     } = req;
-
-    const limit =
-      +query.limit ||
-      (query.page && defaultPaginationLimit) ||
-      Number.MAX_SAFE_INTEGER;
-    const skip = query.page ? (+query.page - 1) * limit : 0;
 
     const posts = await Post.aggregate([
       { $match: { author: { $regex: author, $options: "i" } } },
       { $sort: { likes: -1 } },
-      { $skip: skip },
-      { $limit: limit },
+      { $skip: $skip(page) },
+      { $limit: paginationLimit },
       {
         $group: {
           _id: {
@@ -52,8 +47,8 @@ const getPostsByAuthor = async (req, res, next) => {
       },
     ]);
 
-    res.status(200).json({
-      error: false,
+    response(res, {
+      status: 200,
       message: "Successfully returned posts by author.",
       data: posts,
     });

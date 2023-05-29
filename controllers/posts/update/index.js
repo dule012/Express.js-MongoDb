@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Post from "../../../models/post/index.js";
+import { response } from "../../../utils/common/index.js";
 
 const updatePost = async (req, res, next) => {
   const session = await mongoose.connection.startSession();
@@ -10,22 +11,23 @@ const updatePost = async (req, res, next) => {
     } = req;
 
     await session.startTransaction();
-    const post = await Post.findOne({ _id: id });
 
-    if (!post)
-      return res.status(404).json({ error: false, message: "Post not found." });
+    const post = await Post.updateOne({ _id: id }, body);
+    if (!post.acknowledged)
+      return await response(
+        res,
+        { status: 400, message: "Post not found." },
+        session
+      );
 
-    await Post.updateOne({ _id: id }, body);
     await session.commitTransaction();
-    await session.endSession();
 
-    res
-      .status(200)
-      .json({ error: false, message: "Successfully updated post." });
+    response(res, { status: 200, message: "Successfully updated post." });
   } catch (error) {
     await session.abortTransaction();
-    await session.endSession();
     next(error);
+  } finally {
+    await session.endSession();
   }
 };
 

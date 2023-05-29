@@ -13,20 +13,16 @@ const schema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  likes: {
-    type: Number,
-    default: 0,
-  },
-  usersWhoLiked: {
-    type: Array,
-    default: [],
-  },
   type: {
     type: String,
     enum: ["ordinary", "important"],
     default: "ordinary",
   },
-  authorId: {
+  userId: {
+    type: Number,
+    required: true,
+  },
+  networkId: {
     type: Number,
     required: true,
   },

@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import User from "../../models/user/index.js";
+import { response } from "../../utils/common/index.js";
 dotenv.config();
 
 const authorize = async (req, res, next) => {
@@ -14,25 +15,32 @@ const authorize = async (req, res, next) => {
       cookies?.token;
 
     if (!token)
-      return res.status(401).json({ error: true, message: "Not logged in." });
+      return response(res, { status: 401, message: "Not logged in." }, true);
 
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
-      return res
-        .status(401)
-        .json({ error: true, message: "Unauthorized user." });
+      return response(
+        res,
+        {
+          status: 401,
+          message: "Unauthorized user.",
+        },
+        true
+      );
     }
 
     if (decoded.exp < Math.floor(new Date().getTime() / 1000))
-      return res
-        .status(401)
-        .json({ error: true, message: "Your token expired." });
+      return response(
+        res,
+        { status: 401, message: "Your token expired." },
+        true
+      );
 
     const user = await User.findOne({ email: decoded.email });
     if (!user)
-      return res.status(404).json({ error: true, message: "User not found." });
+      return response(res, { status: 404, message: "User not found." }, true);
 
     req.user = user;
 

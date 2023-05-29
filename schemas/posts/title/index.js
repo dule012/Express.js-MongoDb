@@ -5,9 +5,6 @@ export default {
     page: Joi.number().min(1).messages({
       "number.base": "Query param page need to be a number.",
     }),
-    limit: Joi.number().min(1).messages({
-      "number.base": "Query param limit need to be a number.",
-    }),
   }),
   paramsSchema: Joi.object({
     title: Joi.string().required().messages({
