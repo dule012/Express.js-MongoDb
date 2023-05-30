@@ -15,7 +15,7 @@ const deletePost = async (req, res, next) => {
     if (!post.acknowledged)
       return await response(
         res,
-        { status: 404, message: "Post not found." },
+        { status: 404, message: "Not found post." },
         session
       );
 

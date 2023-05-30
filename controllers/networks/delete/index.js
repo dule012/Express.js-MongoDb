@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import Network from "../../../models/network";
-import Post from "../../../models/post";
+import Posts from "../../../models/posts/index.js";
+import PostsTags from "../../../models/postsTags/index.js";
+import Likes from "../../../models/likes/index.js";
 import { response } from "../../../utils/common";
 
 const deleteNetwork = async (req, res, next) => {
@@ -15,14 +17,25 @@ const deleteNetwork = async (req, res, next) => {
     const posts = await Network.aggregate([
       {
         $match: { _id: id },
-        $lookup: {},
+      },
+      { $addFields: { id: { $toString: "$_id" } } },
+      {
+        $lookup: {
+          from: "posts",
+          localField: "networkId",
+          foreignField: "id",
+          pipeline: [{ $project: { _id: { $toString: "$_id" } } }],
+          as: "posts",
+        },
       },
     ]);
 
-    await Post.deleteMany({ networkId: id });
-
-    const network = await Network.deleteOne({ _id: id });
-    if (!network.acknowledged)
+    const data = await Promise.all([
+      Network.deleteOne({ _id: id }),
+      ...posts[0]?.posts?.map((item) => Posts.deleteMany({ _id: item })),
+      ...posts[0]?.posts?.map((item) => Likes.deleteMany({ postId: item })),
+    ]);
+    if (!data[0].acknowledged)
       return await response(
         res,
         { status: 404, message: "Not found network." },

@@ -3,13 +3,7 @@ import { response, $skip } from "../../../utils/common/index.js";
 
 const getAllNetworks = async (req, res, next) => {
   try {
-    const {
-      query: { name },
-    } = req;
-
-    const networks = await Network.find({
-      name: { $regex: name, $options: "i" },
-    });
+    const networks = await Network.find({}, { __v: 0 });
 
     response(res, {
       status: 200,

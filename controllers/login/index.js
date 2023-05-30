@@ -11,15 +11,11 @@ const login = async (req, res, next) => {
 
     const user = await User.findOne({ email: body.email });
     if (!user)
-      return response(res, { status: 422, message: "Incorrect email." }, true);
+      return response(res, { status: 422, message: "Incorrect email." });
 
     const passwordCompare = await bcrypt.compare(body.password, user.password);
     if (!passwordCompare)
-      return response(
-        res,
-        { status: 422, message: "Incorrect password." },
-        true
-      );
+      return response(res, { status: 422, message: "Incorrect password." });
 
     const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,

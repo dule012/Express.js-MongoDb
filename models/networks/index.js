@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-const network = new mongoose.Schema({
+const schema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
 });
 
-export default mongoose.model("Network", network);
+export default mongoose.model("Networks", schema);

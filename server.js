@@ -7,6 +7,7 @@ import cluster from "cluster";
 import os from "os";
 import router from "./routes/index.js";
 import "./utils/logger/index.js";
+import { response } from "./utils/common/index.js";
 dotenv.config();
 
 if (cluster.isMaster) {
@@ -39,10 +40,7 @@ if (cluster.isMaster) {
   app.use((err, req, res, next) => {
     logger.error(err.message);
 
-    res.status(500).json({
-      error: true,
-      message: "Something went wrong.",
-    });
+    response(res, { status: 500, message: "Something went wrong." });
   });
 
   app.listen(process.env.PORT, () =>

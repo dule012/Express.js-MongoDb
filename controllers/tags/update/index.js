@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import Post from "../../../models/post/index.js";
+import Tags from "../../../models/tags/index.js";
 import { response } from "../../../utils/common/index.js";
 
-const updatePost = async (req, res, next) => {
-  const session = await mongoose.connection.startSession();
+const updateTag = async (req, res, next) => {
+  const session = await mongoose.startSession();
   try {
     const {
       body,
@@ -12,17 +12,17 @@ const updatePost = async (req, res, next) => {
 
     await session.startTransaction();
 
-    const post = await Post.updateOne({ _id: id }, body);
-    if (!post.acknowledged)
+    const tag = await Tags.updateOne({ _id: id }, body);
+    if (!tag.acknowledged)
       return await response(
         res,
-        { status: 400, message: "Not found post." },
+        { status: 404, message: "Not found tag." },
         session
       );
 
     await session.commitTransaction();
 
-    response(res, { status: 200, message: "Successfully updated post." });
+    response(res, { status: 200, message: "Successfully updated tag." });
   } catch (error) {
     await session.abortTransaction();
     next(error);
@@ -31,4 +31,4 @@ const updatePost = async (req, res, next) => {
   }
 };
 
-export default updatePost;
+export default updateTag;

@@ -8,5 +8,5 @@ export const response = async (res, data, session, isCommit) => {
   if (session?.commitTransaction && isCommit) await session.commitTransaction();
   if (session?.abortTransaction && !isCommit) await session.abortTransaction();
 
-  res.status(status).json({ error: !!session, message, ...rest });
+  res.status(status).json({ error: status >= 300, message, ...rest });
 };

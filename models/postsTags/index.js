@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const postTags = new mongoose.Schema({
+const schema = new mongoose.Schema({
   postId: {
     type: Number,
     required: true,
@@ -11,4 +11,4 @@ const postTags = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("PostTags", postTags);
+export default mongoose.model("Posts-Tags", schema);

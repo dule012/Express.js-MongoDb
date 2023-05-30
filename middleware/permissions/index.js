@@ -6,14 +6,10 @@ const permissions = (permissions) => (req, res, next) => {
 
     if (permissions.indexOf(user.role) !== -1) next();
     else
-      response(
-        res,
-        {
-          status: 401,
-          message: "Not permission granted for that role.",
-        },
-        true
-      );
+      response(res, {
+        status: 401,
+        message: "Not permission granted for that role.",
+      });
   } catch (error) {
     next(error);
   }

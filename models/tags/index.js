@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const tags = new mongoose.Schema({
+const schema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -8,4 +8,4 @@ const tags = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("Tags", tags);
+export default mongoose.model("Tags", schema);

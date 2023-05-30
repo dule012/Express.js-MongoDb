@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const likes = new mongoose.Schema({
+const schema = new mongoose.Schema({
   postId: {
     type: Number,
   },
@@ -9,4 +9,4 @@ const likes = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("Likes", likes);
+export default mongoose.model("Likes", schema);

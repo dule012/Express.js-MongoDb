@@ -14,7 +14,7 @@ const updateUser = async (req, res, next) => {
 
     const user = await User.updateOne({ _id: id }, body);
     if (!user.acknowledged)
-      return await response(res, { status: 404, message: "User not found." });
+      return await response(res, { status: 404, message: "Not found user." });
 
     await session.commitTransaction();
 

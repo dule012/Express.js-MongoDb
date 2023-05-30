@@ -28,4 +28,4 @@ const schema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("Post", schema);
+export default mongoose.model("Posts", schema);

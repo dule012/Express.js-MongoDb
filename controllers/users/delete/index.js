@@ -15,7 +15,7 @@ const deleteUser = async (req, res, next) => {
     if (!user.acknowledged)
       return await response(
         res,
-        { status: 404, message: "User not found." },
+        { status: 404, message: "Not found post." },
         session
       );
 
