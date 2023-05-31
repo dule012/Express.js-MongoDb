@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
-import User from "../../models/user/index.js";
+import Users from "../../models/users/index.js";
 import { response } from "../../utils/common/index.js";
 dotenv.config();
 
@@ -9,7 +9,7 @@ const login = async (req, res, next) => {
   try {
     const { body } = req;
 
-    const user = await User.findOne({ email: body.email });
+    const user = await Users.findOne({ email: body.email });
     if (!user)
       return response(res, { status: 422, message: "Incorrect email." });
 

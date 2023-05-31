@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import User from "../../../models/user/index.js";
+import Users from "../../../models/users/index.js";
 import { response } from "../../../utils/common/index.js";
 
 const deleteUser = async (req, res, next) => {
@@ -11,7 +11,7 @@ const deleteUser = async (req, res, next) => {
 
     await session.startTransaction();
 
-    const user = await User.deleteOne({ _id: id });
+    const user = await Users.deleteOne({ _id: id });
     if (!user.acknowledged)
       return await response(
         res,

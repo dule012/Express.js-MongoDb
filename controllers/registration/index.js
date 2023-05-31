@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import User from "../../models/user/index.js";
+import Users from "../../models/users/index.js";
 import { response } from "../../utils/common/index.js";
 
 const registration = async (req, res, next) => {
@@ -10,7 +10,7 @@ const registration = async (req, res, next) => {
 
     await session.startTransaction();
 
-    const user = await User.findOne({
+    const user = await Users.findOne({
       $or: [{ username: body.username }, { email: body.email }],
     });
     if (user.username || user.email)

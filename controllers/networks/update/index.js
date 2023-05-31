@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Network from "../../../models/network";
+import Networks from "../../../models/network";
 import { response } from "../../../utils/common";
 
 const updateNetwork = async (req, res, next) => {
@@ -12,7 +12,7 @@ const updateNetwork = async (req, res, next) => {
 
     await session.startTransaction();
 
-    const network = await Network.updateOne({ _id: id }, body);
+    const network = await Networks.updateOne({ _id: id }, body);
     if (!network.acknowledged)
       return await response(
         res,

@@ -1,4 +1,4 @@
-import Post from "../../../models/post/index.js";
+import Posts from "../../../models/posts/index.js";
 import { $skip, response } from "../../../utils/common/index.js";
 import { paginationLimit } from "../../../constants/index.js";
 
@@ -9,7 +9,7 @@ const getPostsByTitle = async (req, res, next) => {
       query: { page },
     } = req;
 
-    const posts = await Post.aggregate([
+    const posts = await Posts.aggregate([
       {
         $match: {
           title: {

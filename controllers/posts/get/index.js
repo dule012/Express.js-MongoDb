@@ -1,4 +1,4 @@
-import Post from "../../../models/post/index.js";
+import Posts from "../../../models/posts/index.js";
 import { $skip, response } from "../../../utils/common/index.js";
 import { paginationLimit } from "../../../constants/index.js";
 
@@ -8,8 +8,56 @@ const getPosts = async (req, res, next) => {
       query: { page },
     } = req;
 
-    const posts = await Post.aggregate([
-      { $sort: { likes: -1 } },
+    const posts = await Posts.aggregate([
+      { $addFields: { id: { $toString: "$_id" } } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "userId",
+          pipeline: [{ $projection: { __v: 0, _id: { $toString: "_id" } } }],
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      {
+        $lookup: {
+          from: "networks",
+          localField: "_id",
+          foreignField: "networkId",
+          pipeline: [{ $projection: { __v: 0 } }],
+          as: "network",
+        },
+      },
+      { $unwind: "$network" },
+      {
+        $lookup: {
+          from: "likes",
+          localField: "postId",
+          foreignField: "id",
+          pipeline: [{ $projection: { __v: 0 } }],
+          as: "likesByUserId",
+        },
+      },
+      { $unwind: "$likesByUserId" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "likes.userId",
+          pipeline: [{ $projection: { __v: 0, _id: { $toString: "_id" } } }],
+          as: "userWhoLiked",
+        },
+      },
+      { $unwind: "$userWhoLiked" },
+      {
+        $lookup: {
+          from: "posts-tags",
+          localField: "userId",
+          foreignField: "user.id",
+          as: "posts_tag",
+        },
+      },
       { $skip: $skip(page) },
       { $limit: paginationLimit },
       {
@@ -21,8 +69,6 @@ const getPosts = async (req, res, next) => {
               author: "$author",
               title: "$title",
               body: "$body",
-              likes: "$likes",
-              usersWhoLiked: "$usersWhoLiked",
               date: "$date",
               type: "$type",
             },

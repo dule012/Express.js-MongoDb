@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Network from "../../../models/network";
+import Networks from "../../../models/network";
 import { response } from "../../../utils/common";
 
 const createNetwork = async (req, res, next) => {
@@ -9,7 +9,7 @@ const createNetwork = async (req, res, next) => {
 
     await session.startTransaction();
 
-    const network = new Network(body);
+    const network = new Networks(body);
     await network.save();
 
     await session.commitTransaction();

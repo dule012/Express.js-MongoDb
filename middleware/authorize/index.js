@@ -1,18 +1,17 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import User from "../../models/user/index.js";
+import Users from "../../models/users/index.js";
 import { response } from "../../utils/common/index.js";
 dotenv.config();
 
 const authorize = async (req, res, next) => {
   try {
-    const { headers, cookies } = req;
+    const { headers } = req;
 
     const token =
       (headers.authorization?.startsWith("Bearer ") &&
-        headers.authorization?.split(" ")?.[1]) ||
-      headers.authorization ||
-      cookies?.token;
+        headers.authorization?.split(" ")[1]) ||
+      headers.authorization;
 
     if (!token)
       return response(res, { status: 401, message: "Not logged in." });
@@ -30,7 +29,7 @@ const authorize = async (req, res, next) => {
     if (decoded.exp < Math.floor(new Date().getTime() / 1000))
       return response(res, { status: 401, message: "Your token expired." });
 
-    const user = await User.findOne({ email: decoded.email });
+    const user = await Users.findOne({ email: decoded.email });
     if (!user)
       return response(res, { status: 404, message: "Not found user." });
 

@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
-import Network from "../../../models/network";
+import Networks from "../../../models/network";
 import Posts from "../../../models/posts/index.js";
-import PostsTags from "../../../models/postsTags/index.js";
 import Likes from "../../../models/likes/index.js";
 import { response } from "../../../utils/common";
 
@@ -14,7 +13,7 @@ const deleteNetwork = async (req, res, next) => {
 
     await session.startTransaction();
 
-    const posts = await Network.aggregate([
+    const posts = await Networks.aggregate([
       {
         $match: { _id: id },
       },
@@ -31,7 +30,7 @@ const deleteNetwork = async (req, res, next) => {
     ]);
 
     const data = await Promise.all([
-      Network.deleteOne({ _id: id }),
+      Networks.deleteOne({ _id: id }),
       ...posts[0]?.posts?.map((item) => Posts.deleteMany({ _id: item })),
       ...posts[0]?.posts?.map((item) => Likes.deleteMany({ postId: item })),
     ]);

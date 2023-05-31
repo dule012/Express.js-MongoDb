@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Post from "../../../models/post/index.js";
+import Posts from "../../../models/posts/index.js";
 import { response } from "../../../utils/common/index.js";
 
 const likePost = async (req, res, next) => {
@@ -12,7 +12,7 @@ const likePost = async (req, res, next) => {
 
     await session.startTransaction();
 
-    const post = await Post.findOne({ _id: id });
+    const post = await Posts.findOne({ _id: id });
     if (!post)
       return await response(
         res,
@@ -27,7 +27,7 @@ const likePost = async (req, res, next) => {
         session
       );
 
-    await Post.updateOne(
+    await Posts.updateOne(
       { _id: id },
       {
         $inc: { likes: 1 },
