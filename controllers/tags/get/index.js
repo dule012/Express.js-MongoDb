@@ -2,7 +2,7 @@ import Tags from "../../../models/tags/index.js";
 import { response, $skip } from "../../../utils/common/index.js";
 import { paginationLimit } from "../../../constants/index.js";
 
-const getAllTags = async (req, res, next) => {
+const getTags = async (req, res, next) => {
   try {
     const {
       query: { page },
@@ -24,4 +24,4 @@ const getAllTags = async (req, res, next) => {
   }
 };
 
-export default getAllTags;
+export default getTags;

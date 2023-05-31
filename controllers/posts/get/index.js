@@ -10,12 +10,17 @@ const getPosts = async (req, res, next) => {
 
     const posts = await Posts.aggregate([
       { $addFields: { id: { $toString: "$_id" } } },
+      { $skip: $skip(page) },
+      { $limit: paginationLimit },
       {
         $lookup: {
           from: "users",
-          localField: "_id",
-          foreignField: "userId",
-          pipeline: [{ $projection: { __v: 0, _id: { $toString: "_id" } } }],
+          let: { user_id: "$userId" },
+          pipeline: [
+            {
+              $match: { $expr: { $eq: [{ $toString: "$_id" }, "$$user_id"] } },
+            },
+          ],
           as: "user",
         },
       },
@@ -23,9 +28,14 @@ const getPosts = async (req, res, next) => {
       {
         $lookup: {
           from: "networks",
-          localField: "_id",
-          foreignField: "networkId",
-          pipeline: [{ $projection: { __v: 0 } }],
+          let: { network_id: "$networkId" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: [{ $toString: "$_id" }, "$$network_id"] },
+              },
+            },
+          ],
           as: "network",
         },
       },
@@ -35,42 +45,86 @@ const getPosts = async (req, res, next) => {
           from: "likes",
           localField: "postId",
           foreignField: "id",
-          pipeline: [{ $projection: { __v: 0 } }],
-          as: "likesByUserId",
+          as: "like",
         },
       },
-      { $unwind: "$likesByUserId" },
+      { $unwind: "$like" },
       {
         $lookup: {
           from: "users",
-          localField: "_id",
-          foreignField: "likes.userId",
-          pipeline: [{ $projection: { __v: 0, _id: { $toString: "_id" } } }],
+          let: { user_id: "$like.userId" },
+          pipeline: [
+            {
+              $match: { $expr: { $eq: [{ $toString: "$_id" }, "$$user_id"] } },
+            },
+          ],
           as: "userWhoLiked",
         },
       },
       { $unwind: "$userWhoLiked" },
       {
         $lookup: {
-          from: "posts-tags",
-          localField: "userId",
-          foreignField: "user.id",
-          as: "posts_tag",
+          from: "posttags",
+          localField: "postId",
+          foreignField: "id",
+          as: "post_tag",
         },
       },
-      { $skip: $skip(page) },
-      { $limit: paginationLimit },
+      { $unwind: "$post_tag" },
+      {
+        $lookup: {
+          from: "tags",
+          let: { tag_id: "$post_tag.tagId" },
+          pipeline: [
+            { $match: { $expr: { $eq: [{ $toString: "$_id" }, "$$tag_id"] } } },
+          ],
+          as: "tag",
+        },
+      },
+      { $unwind: "$tag" },
       {
         $group: {
-          _id: "$type",
+          _id: {
+            _id: "$_id",
+            title: "$title",
+            body: "$body",
+            date: "$date",
+            type: "$type",
+            user: "$user",
+            network: "$network",
+          },
+          likes: {
+            $addToSet: {
+              _id: "$userWhoLiked._id",
+              username: "$userWhoLiked.username",
+              email: "$userWhoLiked.email",
+            },
+          },
+          tags: {
+            $addToSet: {
+              _id: "$tag._id",
+              name: "$tag.name",
+            },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.type",
           posts: {
             $push: {
-              _id: "$_id",
-              author: "$author",
-              title: "$title",
-              body: "$body",
-              date: "$date",
-              type: "$type",
+              _id: "$_id._id",
+              title: "$_id.title",
+              body: "$_id.body",
+              user: {
+                _id: "$_id.user._id",
+                username: "$_id.user.username",
+                email: "$_id.user.email",
+              },
+              type: "$_id.type",
+              network: "$_id.network",
+              likes: "$likes",
+              tags: "$tags",
             },
           },
         },
