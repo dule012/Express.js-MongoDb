@@ -109,7 +109,7 @@ const getPosts = async (req, res, next) => {
       },
       {
         $group: {
-          _id: "$_id.type",
+          _id: { type: "$_id.type", network: "$_id.network" },
           posts: {
             $push: {
               _id: "$_id._id",
@@ -126,6 +126,12 @@ const getPosts = async (req, res, next) => {
               tags: "$tags",
             },
           },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.network",
+          types: { $push: { type: "$_id.type", posts: "$posts" } },
         },
       },
     ]);
