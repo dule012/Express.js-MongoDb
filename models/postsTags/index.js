@@ -11,4 +11,4 @@ const schema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("Posts-Tags", schema);
+export default mongoose.model("Posts_Tags", schema);

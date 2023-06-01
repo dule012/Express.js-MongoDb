@@ -12,7 +12,7 @@ const deletePost = async (req, res, next) => {
     await session.startTransaction();
 
     const post = await Posts.deleteOne({ _id: id });
-    if (!post.acknowledged)
+    if (!post.deletedCount)
       return await response(
         res,
         { status: 404, message: "Not found post." },

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Users from "../../../models/usersindex.js";
+import Users from "../../../models/users/index.js";
 import { response } from "../../../utils/common/index.js";
 
 const updateUser = async (req, res, next) => {
@@ -13,7 +13,7 @@ const updateUser = async (req, res, next) => {
     await session.startTransaction();
 
     const user = await Users.updateOne({ _id: id }, body);
-    if (!user.acknowledged)
+    if (!user.matchedCount)
       return await response(res, { status: 404, message: "Not found user." });
 
     await session.commitTransaction();

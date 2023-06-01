@@ -1,4 +1,4 @@
-import { response } from "../../utils/common";
+import { response } from "../../utils/common/index.js";
 
 const validation = (schema, prop) => (req, res, next) => {
   try {
@@ -8,6 +8,7 @@ const validation = (schema, prop) => (req, res, next) => {
       response(res, { status: 422, message: error.details[0].message });
     else {
       req[prop] = value;
+
       next();
     }
   } catch (error) {

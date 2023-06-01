@@ -12,7 +12,7 @@ const deleteTag = async (req, res, next) => {
     await session.startTransaction();
 
     const tag = await Tags.deleteOne({ _id: id });
-    if (!tag.acknowledged)
+    if (!tag.deletedCount)
       return await response(res, {
         status: 404,
         message: "Not found tag.",
@@ -29,3 +29,5 @@ const deleteTag = async (req, res, next) => {
     await session.endSession();
   }
 };
+
+export default deleteTag;

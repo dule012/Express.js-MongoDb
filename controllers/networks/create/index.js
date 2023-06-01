@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import Networks from "../../../models/network";
-import { response } from "../../../utils/common";
+import Networks from "../../../models/networks/index.js";
+import { response } from "../../../utils/common/index.js";
 
 const createNetwork = async (req, res, next) => {
   const session = await mongoose.connection.startSession();

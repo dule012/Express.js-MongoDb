@@ -1,4 +1,4 @@
-import { paginationLimit } from "../../constants";
+import { paginationLimit } from "../../constants/index.js";
 
 export const $skip = (page) => (page ? (+page - 1) * paginationLimit : 0);
 

@@ -1,4 +1,4 @@
-import { response } from "../../utils/common";
+import { response } from "../../utils/common/index.js";
 
 const permissions = (permissions) => (req, res, next) => {
   try {

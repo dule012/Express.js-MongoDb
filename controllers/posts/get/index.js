@@ -64,7 +64,7 @@ const getPosts = async (req, res, next) => {
       { $unwind: "$userWhoLiked" },
       {
         $lookup: {
-          from: "posttags",
+          from: "posts_tags",
           localField: "postId",
           foreignField: "id",
           as: "post_tag",
@@ -86,8 +86,7 @@ const getPosts = async (req, res, next) => {
         $group: {
           _id: {
             _id: "$_id",
-            title: "$title",
-            body: "$body",
+            content: "$content",
             date: "$date",
             type: "$type",
             user: "$user",
@@ -114,8 +113,8 @@ const getPosts = async (req, res, next) => {
           posts: {
             $push: {
               _id: "$_id._id",
-              title: "$_id.title",
-              body: "$_id.body",
+              content: "$_id.content",
+              date: "$_id.date",
               user: {
                 _id: "$_id.user._id",
                 username: "$_id.user.username",

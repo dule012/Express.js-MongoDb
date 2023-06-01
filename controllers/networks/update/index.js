@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import Networks from "../../../models/network";
-import { response } from "../../../utils/common";
+import Networks from "../../../models/networks/index.js";
+import { response } from "../../../utils/common/index.js";
 
 const updateNetwork = async (req, res, next) => {
   const session = await mongoose.startSession();
@@ -13,7 +13,7 @@ const updateNetwork = async (req, res, next) => {
     await session.startTransaction();
 
     const network = await Networks.updateOne({ _id: id }, body);
-    if (!network.acknowledged)
+    if (!network.matchedCount)
       return await response(
         res,
         { status: 404, message: "Not found network." },

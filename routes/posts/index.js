@@ -3,19 +3,19 @@ import { roles } from "../../constants/index.js";
 import validation from "../../middleware/validation/index.js";
 import authorize from "../../middleware/authorize/index.js";
 import permissions from "../../middleware/permissions/index.js";
-import postSchema from "../../schemas/post/index.js";
-import likeSchema from "../../schemas/post/like/index.js";
-import createPost from "../../controllers/posts/create/index.js.js.js";
+import postsSchema from "../../schemas/posts/index.js";
+import likeSchema from "../../schemas/posts/like/index.js";
+import createPost from "../../controllers/posts/create/index.js";
 import updatePost from "../../controllers/posts/update/index.js";
-import deletePost from "../../controllers/posts/delete/index.js.js.js";
-import likePost from "../../controllers/posts/like/index.js.js.js";
-import getPosts from "../../controllers/posts/get/index.js.js.js";
+import deletePost from "../../controllers/posts/delete/index.js";
+import likePost from "../../controllers/posts/like/index.js";
+import getPosts from "../../controllers/posts/get/index.js";
 
 const router = express.Router();
 const { admin, user } = roles;
 
-router.put(
-  "/like/:id",
+router.post(
+  "/like/:postId",
   authorize,
   permissions([user]),
   validation(likeSchema.paramsSchema, "params"),
@@ -27,14 +27,14 @@ router
   .put(
     authorize,
     permissions([admin]),
-    validation(postSchema.updateSchema, "body"),
-    validation(postSchema.paramsSchema, "params"),
+    validation(postsSchema.paramsSchema, "params"),
+    validation(postsSchema.updateSchema, "body"),
     updatePost
   )
   .delete(
     authorize,
     permissions([admin]),
-    validation(postSchema.paramsSchema, "params"),
+    validation(postsSchema.paramsSchema, "params"),
     deletePost
   );
 
@@ -43,13 +43,13 @@ router
   .get(
     authorize,
     permissions([admin, user]),
-    validation(postSchema.querySchema, "query"),
+    validation(postsSchema.querySchema, "query"),
     getPosts
   )
   .post(
     authorize,
     permissions([admin]),
-    validation(postSchema.createSchema, "body"),
+    validation(postsSchema.createSchema, "body"),
     createPost
   );
 

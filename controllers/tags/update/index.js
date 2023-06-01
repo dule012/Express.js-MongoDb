@@ -13,7 +13,7 @@ const updateTag = async (req, res, next) => {
     await session.startTransaction();
 
     const tag = await Tags.updateOne({ _id: id }, body);
-    if (!tag.acknowledged)
+    if (!tag.matchedCount)
       return await response(
         res,
         { status: 404, message: "Not found tag." },

@@ -13,7 +13,7 @@ const updatePost = async (req, res, next) => {
     await session.startTransaction();
 
     const post = await Posts.updateOne({ _id: id }, body);
-    if (!post.acknowledged)
+    if (!post.matchedCount)
       return await response(
         res,
         { status: 400, message: "Not found post." },
