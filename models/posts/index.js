@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 const likeSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
+  username: { type: String, required: true },
+  email: { type: String, required: true },
 });
 
 const schema = new mongoose.Schema({
@@ -41,6 +41,6 @@ const schema = new mongoose.Schema({
   },
 });
 
-schema.index({ "$**": "text" });
+schema.index({ content: "text" });
 
 export default mongoose.model("Posts", schema);

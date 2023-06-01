@@ -48,7 +48,7 @@ router
   )
   .post(
     authorize,
-    permissions([admin]),
+    permissions([user, admin]),
     validation(postsSchema.createSchema, "body"),
     createPost
   );

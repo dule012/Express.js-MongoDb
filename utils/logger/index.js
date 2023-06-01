@@ -1,7 +1,7 @@
 import winston from "winston";
 
 const logFormat = winston.format.printf(
-  (info) => `${info.level}: ${info.message}\n`
+  (info) => `\n${info.level}: ${info.message}\n`
 );
 
 global.logger = winston.createLogger({

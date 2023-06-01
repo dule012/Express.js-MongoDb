@@ -13,7 +13,7 @@ const registration = async (req, res, next) => {
     const user = await Users.findOne({
       $or: [{ username: body.username }, { email: body.email }],
     });
-    if (user.username || user.email)
+    if (user?.username || user?.email)
       return await response(
         res,
         {
@@ -28,7 +28,7 @@ const registration = async (req, res, next) => {
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(body.password, salt);
 
-    const newUser = new User({ ...body, password });
+    const newUser = new Users({ ...body, password });
     await newUser.save();
 
     await session.commitTransaction();

@@ -11,9 +11,9 @@ const getPosts = async (req, res, next) => {
     const posts = await Posts.aggregate([
       {
         $match: {
-          "user.username": { $text: { $search: username || "" } },
-          content: { $text: { $search: content } },
-          network: { $text: { $search: network || "" } },
+          ...(username ? { "user.username": { $regex: username } } : {}),
+          ...(content ? { content: { $regex: content } } : {}),
+          ...(network ? { network: { $regex: network } } : {}),
         },
       },
       { $skip: $skip(page) },

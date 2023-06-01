@@ -7,7 +7,7 @@ export default {
   querySchema: Joi.object({
     page: Joi.number().min(1),
     content: Joi.string().min(1),
-    user: Joi.string().min(1),
+    username: Joi.string().min(1),
     network: Joi.string().min(1),
   }),
   paramsSchema: Joi.object({

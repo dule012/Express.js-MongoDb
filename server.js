@@ -5,12 +5,29 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cluster from "cluster";
 import os from "os";
+import fs from "fs";
+import { execSync } from "child_process";
+import spdy from "spdy";
 import router from "./routes/index.js";
 import "./utils/logger/index.js";
 import { response } from "./utils/common/index.js";
 dotenv.config();
 
+const key = "./certs/server.key";
+const certificate = "./certs/server.cert";
+
 if (cluster.isMaster) {
+  if (!fs.existsSync("./certs")) fs.mkdirSync("./certs");
+
+  if (!fs.existsSync(key) || !fs.existsSync(certificate)) {
+    execSync(
+      'openssl req  -nodes -new -x509  \
+    -keyout ./certs/server.key \
+    -out ./certs/server.cert \
+    -subj "/C=US/ST=State/L=City/O=company/OU=Com/CN=www.testserver.local"'
+    );
+  }
+
   const numCPUs = os.cpus().length;
 
   for (let i = 0; i < numCPUs; i++) {
@@ -43,7 +60,24 @@ if (cluster.isMaster) {
     response(res, { status: 500, message: "Something went wrong." });
   });
 
-  app.listen(process.env.PORT, () =>
-    logger.info(`Server listening at localhost:${process.env.PORT}`)
+  const server =
+    process.env.SCHEMA === "https" && process.env.HOST
+      ? spdy.createServer(
+          {
+            key: fs.readFileSync(key),
+            cert: fs.readFileSync(certificate),
+          },
+          app
+        )
+      : app;
+
+  server.listen(
+    { port: process.env.PORT, host: process.env.HOST || "localhost" },
+    () =>
+      logger.info(
+        `Server listening at ${process.env.SCHEMA || "http"}://${
+          process.env.HOST || "localhost"
+        }:${process.env.PORT}`
+      )
   );
 }
