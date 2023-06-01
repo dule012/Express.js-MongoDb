@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import Networks from "../../../models/networks/index.js";
 import Posts from "../../../models/posts/index.js";
-import Likes from "../../../models/likes/index.js";
 import { response } from "../../../utils/common/index.js";
 
 const deleteNetwork = async (req, res, next) => {
@@ -13,33 +12,18 @@ const deleteNetwork = async (req, res, next) => {
 
     await session.startTransaction();
 
-    const posts = await Networks.aggregate([
-      {
-        $match: { _id: id },
-      },
-      { $addFields: { id: { $toString: "$_id" } } },
-      {
-        $lookup: {
-          from: "posts",
-          localField: "networkId",
-          foreignField: "id",
-          pipeline: [{ $project: { _id: { $toString: "$_id" } } }],
-          as: "posts",
-        },
-      },
-    ]);
-
-    const data = await Promise.all([
-      Networks.deleteOne({ _id: id }),
-      ...posts[0]?.posts?.map((item) => Posts.deleteMany({ _id: item })),
-      ...posts[0]?.posts?.map((item) => Likes.deleteMany({ postId: item })),
-    ]);
-    if (!data[0].deleteCount)
+    const network = await Networks.findOne({ _id: id });
+    if (!network)
       return await response(
         res,
         { status: 404, message: "Not found network." },
         session
       );
+
+    await Promise.all([
+      Networks.deleteOne({ _id: id }),
+      Posts.deleteMany({ network: network.name }),
+    ]);
 
     await session.commitTransaction();
 

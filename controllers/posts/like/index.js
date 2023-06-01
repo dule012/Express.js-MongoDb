@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Likes from "../../../models/likes/index.js";
+import Posts from "../../../models/posts/index.js";
 import { response } from "../../../utils/common/index.js";
 
 const likePost = async (req, res, next) => {
@@ -7,23 +7,26 @@ const likePost = async (req, res, next) => {
   try {
     const {
       params: { postId },
-      user: { _id },
+      user: { username, email },
     } = req;
 
     await session.startTransaction();
 
-    const userLiked = await Likes.deleteOne({ postId, userId: _id });
+    const post = await Posts.findOne({ _id: postId });
+    if (!post)
+      return await response(res, { status: 404, message: "Not found post." });
 
-    if (!userLiked.deletedCount) {
-      const like = new Likes({ postId, userId: _id });
-      await like.save();
-    }
+    const isLiked = post.likes.find((item) => item.username === username);
+    await Posts.updateOne(
+      { _id: postId },
+      { [!isLiked ? "$push" : "$pull"]: { likes: { username, email } } }
+    );
 
     await session.commitTransaction();
 
     response(res, {
       status: 200,
-      message: !userLiked.deletedCount
+      message: !isLiked
         ? "Successfully liked post."
         : "Successfully unlike post.",
     });

@@ -9,7 +9,10 @@ const createPost = async (req, res, next) => {
 
     await session.startTransaction();
 
-    const post = new Posts({ ...body, userId: user._id });
+    const post = new Posts({
+      ...body,
+      user: { username: user.username, email: user.email },
+    });
     await post.save();
 
     await session.commitTransaction();

@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 
+const likeSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+});
+
 const schema = new mongoose.Schema({
   content: {
     type: String,
@@ -14,14 +19,28 @@ const schema = new mongoose.Schema({
     enum: ["ordinary", "important"],
     default: "ordinary",
   },
-  userId: {
-    type: Number,
+  user: {
+    username: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
+  },
+  network: {
+    type: String,
     required: true,
   },
-  networkId: {
-    type: Number,
-    required: true,
+  likes: {
+    type: [likeSchema],
+    default: [],
+  },
+  tags: {
+    type: [String],
+    default: [],
   },
 });
+
+schema.index({ "$**": "text" });
 
 export default mongoose.model("Posts", schema);

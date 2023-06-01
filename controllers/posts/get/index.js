@@ -5,125 +5,35 @@ import { paginationLimit } from "../../../constants/index.js";
 const getPosts = async (req, res, next) => {
   try {
     const {
-      query: { page },
+      query: { page, username, content, network },
     } = req;
 
     const posts = await Posts.aggregate([
-      { $addFields: { id: { $toString: "$_id" } } },
+      {
+        $match: {
+          "user.username": { $text: { $search: username || "" } },
+          content: { $text: { $search: content } },
+          network: { $text: { $search: network || "" } },
+        },
+      },
       { $skip: $skip(page) },
       { $limit: paginationLimit },
       {
-        $lookup: {
-          from: "users",
-          let: { user_id: "$userId" },
-          pipeline: [
-            {
-              $match: { $expr: { $eq: [{ $toString: "$_id" }, "$$user_id"] } },
-            },
-          ],
-          as: "user",
-        },
-      },
-      { $unwind: "$user" },
-      {
-        $lookup: {
-          from: "networks",
-          let: { network_id: "$networkId" },
-          pipeline: [
-            {
-              $match: {
-                $expr: { $eq: [{ $toString: "$_id" }, "$$network_id"] },
-              },
-            },
-          ],
-          as: "network",
-        },
-      },
-      { $unwind: "$network" },
-      {
-        $lookup: {
-          from: "likes",
-          localField: "postId",
-          foreignField: "id",
-          as: "like",
-        },
-      },
-      { $unwind: "$like" },
-      {
-        $lookup: {
-          from: "users",
-          let: { user_id: "$like.userId" },
-          pipeline: [
-            {
-              $match: { $expr: { $eq: [{ $toString: "$_id" }, "$$user_id"] } },
-            },
-          ],
-          as: "userWhoLiked",
-        },
-      },
-      { $unwind: "$userWhoLiked" },
-      {
-        $lookup: {
-          from: "posts_tags",
-          localField: "postId",
-          foreignField: "id",
-          as: "post_tag",
-        },
-      },
-      { $unwind: "$post_tag" },
-      {
-        $lookup: {
-          from: "tags",
-          let: { tag_id: "$post_tag.tagId" },
-          pipeline: [
-            { $match: { $expr: { $eq: [{ $toString: "$_id" }, "$$tag_id"] } } },
-          ],
-          as: "tag",
-        },
-      },
-      { $unwind: "$tag" },
-      {
         $group: {
           _id: {
-            _id: "$_id",
-            content: "$content",
-            date: "$date",
-            type: "$type",
-            user: "$user",
             network: "$network",
+            type: "$type",
           },
-          likes: {
-            $addToSet: {
-              _id: "$userWhoLiked._id",
-              username: "$userWhoLiked.username",
-              email: "$userWhoLiked.email",
-            },
-          },
-          tags: {
-            $addToSet: {
-              _id: "$tag._id",
-              name: "$tag.name",
-            },
-          },
-        },
-      },
-      {
-        $group: {
-          _id: { type: "$_id.type", network: "$_id.network" },
           posts: {
             $push: {
-              _id: "$_id._id",
-              content: "$_id.content",
-              date: "$_id.date",
-              user: {
-                _id: "$_id.user._id",
-                username: "$_id.user.username",
-                email: "$_id.user.email",
-              },
-              type: "$_id.type",
-              network: "$_id.network",
+              _id: "$_id",
+              content: "$content",
+              date: "$date",
+              type: "$type",
               likes: "$likes",
               tags: "$tags",
+              network: "$network",
+              user: "$user",
             },
           },
         },
@@ -131,7 +41,12 @@ const getPosts = async (req, res, next) => {
       {
         $group: {
           _id: "$_id.network",
-          types: { $push: { type: "$_id.type", posts: "$posts" } },
+          type: {
+            $push: {
+              type: "$_id.type",
+              posts: "$posts",
+            },
+          },
         },
       },
     ]);

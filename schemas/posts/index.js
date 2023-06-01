@@ -16,14 +16,19 @@ export default {
   createSchema: Joi.object({
     content: Joi.string().required().min(2),
     type: Joi.string().valid("ordinary", "important"),
-    userId: Joi.string().required().min(15),
-    networkId: Joi.string().required().min(15),
+    network: Joi.string().required().min(2),
   }),
   updateSchema: Joi.object({
     content: Joi.string().min(2),
     date: Joi.date().format("YYYY-MM-DD HH:mm"),
     type: Joi.string().valid("ordinary", "important"),
-    userId: Joi.string().min(15),
-    networkId: Joi.string().min(15),
+    network: Joi.string().min(2),
+    likes: Joi.array().items(
+      Joi.object({
+        username: Joi.string().required().min(2),
+        email: Joi.string().required().email().min(6),
+      })
+    ),
+    tags: Joi.array().items(Joi.string()),
   }),
 };
