@@ -6,13 +6,13 @@ const updateNetwork = async (req, res, next) => {
   const session = await mongoose.startSession();
   try {
     const {
-      params: { id },
+      params: { networkId },
       body,
     } = req;
 
     await session.startTransaction();
 
-    const network = await Networks.updateOne({ _id: id }, body);
+    const network = await Networks.updateOne({ _id: networkId }, body);
     if (!network.matchedCount)
       return await response(
         res,

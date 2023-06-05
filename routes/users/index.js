@@ -24,7 +24,7 @@ router.post(
 router.post("/login", validation(loginSchema, "body"), login);
 
 router
-  .route("/:id")
+  .route("/:userId")
   .put(
     authorize,
     permissions([admin]),

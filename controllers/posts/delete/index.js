@@ -6,12 +6,12 @@ const deletePost = async (req, res, next) => {
   const session = await mongoose.connection.startSession();
   try {
     const {
-      params: { id },
+      params: { postId },
     } = req;
 
     await session.startTransaction();
 
-    const post = await Posts.deleteOne({ _id: id });
+    const post = await Posts.deleteOne({ _id: postId });
     if (!post.deletedCount)
       return await response(
         res,

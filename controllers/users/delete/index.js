@@ -7,12 +7,12 @@ const deleteUser = async (req, res, next) => {
   const session = await mongoose.connection.startSession();
   try {
     const {
-      params: { id },
+      params: { userId },
     } = req;
 
     await session.startTransaction();
 
-    const user = await Users.findOne({ _id: id });
+    const user = await Users.findOne({ _id: userId });
     if (!user)
       return await response(
         res,
@@ -21,7 +21,7 @@ const deleteUser = async (req, res, next) => {
       );
 
     await Promise.all([
-      Users.deleteOne({ _id: id }),
+      Users.deleteOne({ _id: userId }),
       Posts.deleteMany({
         "user.username": user.username,
         "user.email": user.email,

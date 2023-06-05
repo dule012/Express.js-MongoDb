@@ -7,12 +7,12 @@ const updateTag = async (req, res, next) => {
   try {
     const {
       body,
-      params: { id },
+      params: { tagId },
     } = req;
 
     await session.startTransaction();
 
-    const tag = await Tags.updateOne({ _id: id }, body);
+    const tag = await Tags.updateOne({ _id: tagId }, body);
     if (!tag.matchedCount)
       return await response(
         res,

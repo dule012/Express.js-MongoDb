@@ -7,12 +7,12 @@ const deleteTag = async (req, res, next) => {
   const session = await mongoose.startSession();
   try {
     const {
-      params: { id },
+      params: { tagId },
     } = req;
 
     await session.startTransaction();
 
-    const tag = await Tags.findOne({ _id: id });
+    const tag = await Tags.findOne({ _id: tagId });
     if (!tag)
       return await response(res, {
         status: 404,
@@ -21,7 +21,7 @@ const deleteTag = async (req, res, next) => {
       });
 
     await Promise.all([
-      Tags.deleteOne({ _id: id }),
+      Tags.deleteOne({ _id: tagId }),
       Posts.updateMany({ tags: tag.name }, { $pull: { tags: tag.name } }),
     ]);
 

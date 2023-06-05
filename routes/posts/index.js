@@ -23,7 +23,7 @@ router.post(
 );
 
 router
-  .route("/:id")
+  .route("/:postId")
   .put(
     authorize,
     permissions([admin]),

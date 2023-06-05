@@ -7,12 +7,12 @@ const deleteNetwork = async (req, res, next) => {
   const session = await mongoose.startSession();
   try {
     const {
-      params: { id },
+      params: { networkId },
     } = req;
 
     await session.startTransaction();
 
-    const network = await Networks.findOne({ _id: id });
+    const network = await Networks.findOne({ _id: networkId });
     if (!network)
       return await response(
         res,
@@ -21,7 +21,7 @@ const deleteNetwork = async (req, res, next) => {
       );
 
     await Promise.all([
-      Networks.deleteOne({ _id: id }),
+      Networks.deleteOne({ _id: networkId }),
       Posts.deleteMany({ network: network.name }),
     ]);
 

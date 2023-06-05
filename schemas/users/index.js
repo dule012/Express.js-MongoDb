@@ -5,7 +5,7 @@ export default {
     page: Joi.number().min(1),
   }),
   paramsSchema: Joi.object({
-    id: Joi.string().required(),
+    userId: Joi.string().required(),
   }),
   createSchema: Joi.object({
     username: Joi.string().required().min(2),

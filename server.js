@@ -46,7 +46,11 @@ if (cluster.isMaster) {
   app.use(
     cors({
       credentials: true,
-      origin: [process.env.FRONT_URL],
+      origin: [
+        process.env.NODE_ENV === "dev"
+          ? process.env.FRONT_URL_DEV
+          : process.env.FRONT_URL_PROD,
+      ],
     })
   );
   app.options("*", cors());
@@ -81,3 +85,5 @@ if (cluster.isMaster) {
       )
   );
 }
+
+export default server;

@@ -7,12 +7,12 @@ const updateUser = async (req, res, next) => {
   try {
     const {
       body,
-      params: { id },
+      params: { userId },
     } = req;
 
     await session.startTransaction();
 
-    const user = await Users.updateOne({ _id: id }, body);
+    const user = await Users.updateOne({ _id: userId }, body);
     if (!user.matchedCount)
       return await response(res, { status: 404, message: "Not found user." });
 

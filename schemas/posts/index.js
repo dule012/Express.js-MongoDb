@@ -11,7 +11,7 @@ export default {
     network: Joi.string().min(1),
   }),
   paramsSchema: Joi.object({
-    id: Joi.string().required(),
+    postId: Joi.string().required(),
   }),
   createSchema: Joi.object({
     content: Joi.string().required().min(2),

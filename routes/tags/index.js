@@ -13,7 +13,7 @@ const router = express.Router();
 const { admin } = roles;
 
 router
-  .route("/:id")
+  .route("/:tagId")
   .put(
     authorize,
     permissions([admin]),

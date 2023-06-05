@@ -7,12 +7,12 @@ const updatePost = async (req, res, next) => {
   try {
     const {
       body,
-      params: { id },
+      params: { postId },
     } = req;
 
     await session.startTransaction();
 
-    const post = await Posts.updateOne({ _id: id }, body);
+    const post = await Posts.updateOne({ _id: postId }, body);
     if (!post.matchedCount)
       return await response(
         res,
