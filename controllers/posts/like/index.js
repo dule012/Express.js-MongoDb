@@ -1,41 +1,40 @@
 import mongoose from "mongoose";
-import Post from "../../../models/post/index.js";
+import Posts from "../../../models/posts/index.js";
+import { response } from "../../../utils/common/index.js";
 
 const likePost = async (req, res, next) => {
   const session = await mongoose.connection.startSession();
   try {
     const {
-      params: { id },
-      user,
+      params: { postId },
+      user: { username, email, _id },
     } = req;
 
     await session.startTransaction();
-    const post = await Post.findOne({ _id: id });
 
+    const post = await Posts.findOne({ _id: postId });
     if (!post)
-      return res.status(404).json({ error: false, message: "Post not found." });
+      return await response(res, { status: 404, message: "Not found post." });
 
-    if (post.usersWhoLiked.indexOf(user.username) !== -1)
-      return res.status(200).json({
-        error: false,
-        message: "Post already been liked by this user.",
-      });
-
-    await Post.updateOne(
-      { _id: id },
-      {
-        $inc: { likes: 1 },
-        usersWhoLiked: [...post.usersWhoLiked, req.user.username],
-      }
+    const isLiked = post.likes.find((item) => item.username === username);
+    await Posts.updateOne(
+      { _id: postId },
+      { [!isLiked ? "$push" : "$pull"]: { likes: { username, email, _id } } }
     );
-    await session.commitTransaction();
-    await session.endSession();
 
-    res.status(200).json({ error: false, message: "Successfully liked post." });
+    await session.commitTransaction();
+
+    response(res, {
+      status: 200,
+      message: !isLiked
+        ? "Successfully liked post."
+        : "Successfully unlike post.",
+    });
   } catch (error) {
     await session.abortTransaction();
-    await session.endSession();
     next(error);
+  } finally {
+    await session.endSession();
   }
 };
 

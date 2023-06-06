@@ -1,26 +1,28 @@
 import mongoose from "mongoose";
-import Post from "../../../models/post/index.js";
+import Posts from "../../../models/posts/index.js";
+import { response } from "../../../utils/common/index.js";
 
 const createPost = async (req, res, next) => {
   const session = await mongoose.connection.startSession();
   try {
-    const { body } = req;
+    const { body, user } = req;
 
     await session.startTransaction();
 
-    const post = new Post(body);
+    const post = new Posts({
+      ...body,
+      user: { username: user.username, email: user.email },
+    });
     await post.save();
 
     await session.commitTransaction();
-    await session.endSession();
 
-    res
-      .status(200)
-      .json({ error: false, message: "Successfully created post." });
+    response(res, { status: 200, message: "Successfully created post." });
   } catch (error) {
     await session.abortTransaction();
-    await session.endSession();
     next(error);
+  } finally {
+    await session.endSession();
   }
 };
 

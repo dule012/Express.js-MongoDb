@@ -5,59 +5,39 @@ const Joi = JoiBase.extend(JoiDate);
 
 export default {
   querySchema: Joi.object({
-    page: Joi.number().min(1).messages({
-      "number.base": "Query param page need to be a number.",
-    }),
-    limit: Joi.number().min(1).messages({
-      "number.base": "Query param limit need to be a number.",
-    }),
+    page: Joi.number().min(1),
+    content: Joi.string().min(1),
+    username: Joi.string().min(1),
+    network: Joi.string().min(1),
   }),
   paramsSchema: Joi.object({
-    id: Joi.string().required().messages({
-      "string.base": "Id need to be a id.",
-      "string.empty": "Id is required.",
-    }),
+    postId: Joi.string().required(),
   }),
   createSchema: Joi.object({
-    title: Joi.string().required().min(2).messages({
-      "string.base": "Field title need to be a string.",
-      "string.empty": "Field title is required.",
-    }),
-    author: Joi.string().required().min(2).messages({
-      "string.base": "Field author need to be a string.",
-      "string.empty": "Field author is required.",
-    }),
-    body: Joi.string().required().min(2).messages({
-      "string.base": "Field body need to be a string.",
-      "string.empty": "Field body is required.",
-    }),
-    type: Joi.string().required().valid("ordinary", "important").messages({
-      "string.base": "Field type need to be a string.",
-      "string.empty": "Field type is required.",
-    }),
+    content: Joi.string().required().min(2),
+    type: Joi.string().valid("ordinary", "important"),
+    network: Joi.string().required().min(2),
+    likes: Joi.array().items(
+      Joi.object({
+        username: Joi.string().required().min(2),
+        email: Joi.string().required().email().min(6),
+        _id: Joi.string().required().min(15),
+      })
+    ),
+    tags: Joi.array().items(Joi.string()),
   }),
   updateSchema: Joi.object({
-    title: Joi.string().min(2).messages({
-      "string.base": "Field title need to be a string.",
-    }),
-    author: Joi.string().min(2).messages({
-      "string.base": "Field author need to be a string.",
-    }),
-    body: Joi.string().min(2).messages({
-      "string.base": "Field body need to be a string.",
-    }),
-    likes: Joi.number().min(1).messages({
-      "number.base": "Field likes need to be a number.",
-      "number.min": "Field likes min. length is 1.",
-    }),
-    usersWhoLiked: Joi.array().items(Joi.string()).messages({
-      "array.base": "Field usersWhoLiked need to be array of strings.",
-    }),
-    date: Joi.date().format("YYYY-MM-DD HH:mm").messages({
-      "date.base": "Field date need to be date format YYYY-MM-DD HH:mm.",
-    }),
-    type: Joi.string().valid("ordinary", "important").messages({
-      "string.base": "Field type need to be a string.",
-    }),
+    content: Joi.string().min(2),
+    date: Joi.date().format("YYYY-MM-DD HH:mm"),
+    type: Joi.string().valid("ordinary", "important"),
+    network: Joi.string().min(2),
+    likes: Joi.array().items(
+      Joi.object({
+        username: Joi.string().required().min(2),
+        email: Joi.string().required().email().min(6),
+        _id: Joi.string().required().min(15),
+      })
+    ),
+    tags: Joi.array().items(Joi.string()),
   }),
 };

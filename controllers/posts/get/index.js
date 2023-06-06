@@ -1,41 +1,58 @@
-import Post from "../../../models/post/index.js";
-import { defaultPaginationLimit } from "../../../constants/index.js";
+import Posts from "../../../models/posts/index.js";
+import { $skip, response } from "../../../utils/common/index.js";
+import { paginationLimit } from "../../../constants/index.js";
 
 const getPosts = async (req, res, next) => {
   try {
-    const { query } = req;
+    const {
+      query: { page, username, content, network },
+    } = req;
 
-    const limit =
-      +query.limit ||
-      (query.page && defaultPaginationLimit) ||
-      Number.MAX_SAFE_INTEGER;
-    const skip = query.page ? (+query.page - 1) * limit : 0;
-
-    const posts = await Post.aggregate([
-      { $sort: { likes: -1 } },
-      { $skip: skip },
-      { $limit: limit },
+    const posts = await Posts.aggregate([
+      {
+        $match: {
+          ...(username ? { "user.username": { $regex: username } } : {}),
+          ...(content ? { content: { $regex: content } } : {}),
+          ...(network ? { network: { $regex: network } } : {}),
+        },
+      },
+      { $skip: $skip(page) },
+      { $limit: paginationLimit },
       {
         $group: {
-          _id: "$type",
+          _id: {
+            network: "$network",
+            type: "$type",
+          },
           posts: {
             $push: {
               _id: "$_id",
-              author: "$author",
-              title: "$title",
-              body: "$body",
-              likes: "$likes",
-              usersWhoLiked: "$usersWhoLiked",
+              content: "$content",
               date: "$date",
               type: "$type",
+              likes: "$likes",
+              tags: "$tags",
+              network: "$network",
+              user: "$user",
+            },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.network",
+          type: {
+            $push: {
+              type: "$_id.type",
+              posts: "$posts",
             },
           },
         },
       },
     ]);
 
-    res.status(200).json({
-      error: false,
+    response(res, {
+      status: 200,
       message: "Successfully returned posts.",
       data: posts,
     });

@@ -1,30 +1,32 @@
 import mongoose from "mongoose";
-import Post from "../../../models/post/index.js";
+import Posts from "../../../models/posts/index.js";
+import { response } from "../../../utils/common/index.js";
 
 const deletePost = async (req, res, next) => {
   const session = await mongoose.connection.startSession();
   try {
     const {
-      params: { id },
+      params: { postId },
     } = req;
 
     await session.startTransaction();
-    const post = await Post.findOne({ _id: id });
 
-    if (!post)
-      return res.status(404).json({ error: false, message: "Post not found." });
+    const post = await Posts.deleteOne({ _id: postId });
+    if (!post.deletedCount)
+      return await response(
+        res,
+        { status: 404, message: "Not found post." },
+        session
+      );
 
-    await Post.deleteOne({ _id: id });
     await session.commitTransaction();
-    await session.endSession();
 
-    res
-      .status(200)
-      .json({ error: false, message: "Successfully deleted post." });
+    response(res, { status: 200, message: "Successfully deleted post." });
   } catch (error) {
     await session.abortTransaction();
-    await session.endSession();
     next(error);
+  } finally {
+    await session.endSession();
   }
 };
 

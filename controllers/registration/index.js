@@ -1,34 +1,44 @@
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import User from "../../models/user/index.js";
+import Users from "../../models/users/index.js";
+import { response } from "../../utils/common/index.js";
 
 const registration = async (req, res, next) => {
+  const session = await mongoose.connection.startSession();
   try {
     const { body } = req;
 
-    const username = await User.findOne({ username: body.username });
-    if (username)
-      return res
-        .status(422)
-        .json({ error: true, message: "Username already exists." });
+    await session.startTransaction();
 
-    const email = await User.findOne({ email: body.email });
-    if (email)
-      return res
-        .status(422)
-        .json({ error: true, message: "Email already exists." });
+    const user = await Users.findOne({
+      $or: [{ username: body.username }, { email: body.email }],
+    });
+    if (user?.username || user?.email)
+      return await response(
+        res,
+        {
+          status: 422,
+          message: user.username
+            ? "Username already exists."
+            : "Email already exists.",
+        },
+        session
+      );
 
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(body.password, salt);
 
-    const user = new User({ ...body, password });
-    await user.save();
+    const newUser = new Users({ ...body, password });
+    await newUser.save();
 
-    res.status(200).json({
-      error: false,
-      message: "Successfully created user.",
-    });
+    await session.commitTransaction();
+
+    response(res, { status: 200, message: "Successfully created user." });
   } catch (error) {
+    await session.abortTransaction();
     next(error);
+  } finally {
+    await session.endSession();
   }
 };
 

@@ -1,24 +1,21 @@
-import User from "../../../models/user/index.js";
-import { defaultPaginationLimit } from "../../../constants/index.js";
+import Users from "../../../models/users/index.js";
+import { $skip, response } from "../../../utils/common/index.js";
+import { paginationLimit } from "../../../constants/index.js";
 
 const getUsers = async (req, res, next) => {
   try {
-    const { query } = req;
+    const {
+      query: { page },
+    } = req;
 
-    const limit =
-      +query.limit ||
-      (query.page && defaultPaginationLimit) ||
-      Number.MAX_SAFE_INTEGER;
-    const skip = query.page ? (+query.page - 1) * limit : 0;
-
-    const users = await User.aggregate([
-      { $skip: skip },
-      { $limit: limit },
+    const users = await Users.aggregate([
+      { $skip: $skip(page) },
+      { $limit: paginationLimit },
       { $project: { password: 0, __v: 0 } },
     ]);
 
-    res.status(200).json({
-      error: false,
+    response(res, {
+      status: 200,
       message: "Successfully returned users.",
       data: users,
     });

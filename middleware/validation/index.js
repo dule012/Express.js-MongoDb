@@ -1,11 +1,14 @@
+import { response } from "../../utils/common/index.js";
+
 const validation = (schema, prop) => (req, res, next) => {
   try {
     const { value, error } = schema.validate(req[prop]);
 
     if (error)
-      res.status(422).json({ error: true, message: error.details[0].message });
+      response(res, { status: 422, message: error.details[0].message });
     else {
       req[prop] = value;
+
       next();
     }
   } catch (error) {

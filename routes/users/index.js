@@ -3,7 +3,7 @@ import { roles } from "../../constants/index.js";
 import validation from "../../middleware/validation/index.js";
 import authorize from "../../middleware/authorize/index.js";
 import permissions from "../../middleware/permissions/index.js";
-import userSchema from "../../schemas/user/index.js";
+import usersSchema from "../../schemas/users/index.js";
 import loginSchema from "../../schemas/login/index.js";
 import registration from "../../controllers/registration/index.js";
 import login from "../../controllers/login/index.js";
@@ -17,25 +17,25 @@ const { admin } = roles;
 
 router.post(
   "/registration",
-  validation(userSchema.createSchema, "body"),
+  validation(usersSchema.createSchema, "body"),
   registration
 );
 
 router.post("/login", validation(loginSchema, "body"), login);
 
 router
-  .route("/:id")
+  .route("/:userId")
   .put(
     authorize,
     permissions([admin]),
-    validation(userSchema.updateSchema, "body"),
-    validation(userSchema.paramsSchema, "params"),
+    validation(usersSchema.paramsSchema, "params"),
+    validation(usersSchema.updateSchema, "body"),
     updateUser
   )
   .delete(
     authorize,
     permissions([admin]),
-    validation(userSchema.paramsSchema, "params"),
+    validation(usersSchema.paramsSchema, "params"),
     deleteUser
   );
 
@@ -44,13 +44,13 @@ router
   .get(
     authorize,
     permissions([admin]),
-    validation(userSchema.querySchema, "query"),
+    validation(usersSchema.querySchema, "query"),
     getUsers
   )
   .post(
     authorize,
     permissions([admin]),
-    validation(userSchema.createSchema, "body"),
+    validation(usersSchema.createSchema, "body"),
     createUser
   );
 
