@@ -11,7 +11,7 @@ const getNetworks = async (req, res, next) => {
     const networks = await Networks.aggregate([
       { $skip: $skip(page) },
       { $limit: paginationLimit },
-      { $projection: { __v: 0 } },
+      { $project: { __v: 0 } },
     ]);
 
     response(res, {

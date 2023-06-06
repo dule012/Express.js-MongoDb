@@ -13,7 +13,7 @@ const createUser = async (req, res, next) => {
     const user = await Users.findOne({
       $or: [{ username: body.username }, { email: body.email }],
     });
-    if (user.username || user.email)
+    if (user?.username || user?.email)
       return await response(
         res,
         {

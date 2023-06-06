@@ -11,7 +11,7 @@ const getTags = async (req, res, next) => {
     const tags = await Tags.aggregate([
       { $skip: $skip(page) },
       { $limit: paginationLimit },
-      { $projection: { __v: 0 } },
+      { $project: { __v: 0 } },
     ]);
 
     response(res, {

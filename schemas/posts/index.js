@@ -17,6 +17,14 @@ export default {
     content: Joi.string().required().min(2),
     type: Joi.string().valid("ordinary", "important"),
     network: Joi.string().required().min(2),
+    likes: Joi.array().items(
+      Joi.object({
+        username: Joi.string().required().min(2),
+        email: Joi.string().required().email().min(6),
+        _id: Joi.string().required().min(15),
+      })
+    ),
+    tags: Joi.array().items(Joi.string()),
   }),
   updateSchema: Joi.object({
     content: Joi.string().min(2),
@@ -27,6 +35,7 @@ export default {
       Joi.object({
         username: Joi.string().required().min(2),
         email: Joi.string().required().email().min(6),
+        _id: Joi.string().required().min(15),
       })
     ),
     tags: Joi.array().items(Joi.string()),

@@ -16,7 +16,7 @@ const deleteUser = async (req, res, next) => {
     if (!user)
       return await response(
         res,
-        { status: 404, message: "Not found post." },
+        { status: 404, message: "Not found user." },
         session
       );
 
@@ -30,9 +30,17 @@ const deleteUser = async (req, res, next) => {
 
     await Posts.updateMany(
       {
-        likes: { $elemMatch: { username: user.username, email: user.email } },
+        "likes.username": user.username,
+        "likes.email": user.email,
       },
-      { $pull: { likes: { username: user.username, email: user.email } } }
+      {
+        $pull: {
+          likes: {
+            username: user.username,
+            email: user.email,
+          },
+        },
+      }
     );
 
     await session.commitTransaction();

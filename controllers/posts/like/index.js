@@ -7,7 +7,7 @@ const likePost = async (req, res, next) => {
   try {
     const {
       params: { postId },
-      user: { username, email },
+      user: { username, email, _id },
     } = req;
 
     await session.startTransaction();
@@ -19,7 +19,7 @@ const likePost = async (req, res, next) => {
     const isLiked = post.likes.find((item) => item.username === username);
     await Posts.updateOne(
       { _id: postId },
-      { [!isLiked ? "$push" : "$pull"]: { likes: { username, email } } }
+      { [!isLiked ? "$push" : "$pull"]: { likes: { username, email, _id } } }
     );
 
     await session.commitTransaction();
