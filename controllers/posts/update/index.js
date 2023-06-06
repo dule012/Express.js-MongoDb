@@ -16,7 +16,7 @@ const updatePost = async (req, res, next) => {
     if (!post.matchedCount)
       return await response(
         res,
-        { status: 400, message: "Not found post." },
+        { status: 404, message: "Not found post." },
         session
       );
 

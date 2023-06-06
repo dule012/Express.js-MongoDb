@@ -7,7 +7,7 @@
   "scripts": {
     "start": "nodemon server.js",
     "dev": "nodemon server.js",
-    "test": "mocha"
+    "test": "SET NODE_ENV=test && mocha --timeout 10000"
   },
   "repository": {
     "type": "git",
@@ -23,18 +23,20 @@
     "@joi/date": "^2.1.0",
     "bcrypt": "^5.1.0",
     "browser-sync": "^2.29.3",
-    "chai": "^4.3.7",
-    "chai-http": "^4.3.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "helmet": "^6.1.5",
     "joi": "^17.9.2",
     "jsonwebtoken": "^9.0.0",
-    "mocha": "^10.2.0",
     "mongoose": "^7.1.0",
     "nodemon": "^2.0.22",
     "spdy": "^4.0.2",
     "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^2.0.1",
+    "mocha": "^2.4.5"
   }
 }

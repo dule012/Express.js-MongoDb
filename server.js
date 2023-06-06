@@ -15,8 +15,12 @@ dotenv.config();
 
 const key = "./certs/server.key";
 const certificate = "./certs/server.cert";
+let server;
 
-if (cluster.isMaster) {
+if (
+  cluster.isMaster &&
+  (process.env.NODE_ENV === "dev" || process.env.NODE_ENV === "prod")
+) {
   if (!fs.existsSync("./certs")) fs.mkdirSync("./certs");
 
   if (!fs.existsSync(key) || !fs.existsSync(certificate)) {
@@ -64,7 +68,7 @@ if (cluster.isMaster) {
     response(res, { status: 500, message: "Something went wrong." });
   });
 
-  const server =
+  server =
     process.env.SCHEMA === "https" && process.env.HOST
       ? spdy.createServer(
           {
