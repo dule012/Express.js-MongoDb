@@ -42,11 +42,13 @@ if (
 } else {
   mongoose
     .connect(process.env.MONGODB_URL)
-    .catch(() => logger.error("Error connecting to MongoDB"));
+    .catch((error) => logger.error(`Error connecting to MongoDB: ${error}`));
 
   const app = express();
 
   app.use(express.json());
+  app.options("*", cors());
+
   app.use(
     cors({
       credentials: true,
@@ -57,7 +59,6 @@ if (
       ],
     })
   );
-  app.options("*", cors());
   app.use(helmet());
 
   app.use("/api", router);
